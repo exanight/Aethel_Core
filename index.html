@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHEL CORE | Cybersécurité & Gouvernance</title>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-deep: #0f0c29;
+            --bg-purple: #302b63;
+            --accent-violet: #8e44ad;
+            --shield-white: rgba(255, 255, 255, 0.95);
+            --shield-glass: rgba(255, 255, 255, 0.1);
+            --security-blue: #00d2ff;
+            --security-dark-blue: #0078ff;
+            --text-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, var(--bg-deep), var(--bg-purple));
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- BACKGROUND ANIMATION CANVAS --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 12, 41, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--security-blue);
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--security-blue);
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .btn-nav {
+            padding: 0.5rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--security-blue);
+            color: var(--security-blue);
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-nav:hover {
+            background: var(--security-blue);
+            color: var(--bg-deep);
+            box-shadow: 0 0 15px var(--security-blue);
+        }
+
+        /* --- HERO SECTION --- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            opacity: 0; /* Pour animation JS */
+            transform: translateY(30px);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .cta-button {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            background: linear-gradient(90deg, var(--security-dark-blue), var(--security-blue));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 120, 255, 0.4);
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.6);
+        }
+
+        /* --- SECTIONS GÉNÉRALES --- */
+        section {
+            padding: 5rem 10%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--security-blue);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        /* --- CARTE "LORE" & SERVICES (Le Style Blanc/Bleu Sécurisé) --- */
+        .glass-card {
+            background: var(--shield-white);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid var(--security-blue);
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            color: var(--text-dark);
+        }
+        
+        /* Effet de reflet brillant sur les cartes */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: 0.5s;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 210, 255, 0.2);
+        }
+
+        /* --- GRILLE SERVICES --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-item h3 {
+            color: var(--bg-purple);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .service-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--security-blue);
+        }
+
+        .service-item p {
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* --- SEGMENTATION (PME/GE) --- */
+        .segmentation-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .segment-card {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05); /* Plus sombre pour cette section */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            color: var(--text-light);
+            transition: 0.3s;
+        }
+
+        .segment-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--security-blue);
+        }
+
+        .segment-card h3 {
+            color: var(--security-blue);
+            margin-bottom: 1rem;
+        }
+
+        .segment-card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .segment-card ul li::before {
+            content: '✓';
+            color: var(--security-blue);
+            margin-right: 10px;
+        }
+
+        /* --- CONTACT --- */
+        .contact-form {
+            background: var(--shield-white);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--security-blue);
+            box-shadow: 0 0 5px rgba(0, 210, 255, 0.3);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: rgba(15, 12, 41, 0.95);
+            color: #888;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- ANIMATION CLASSES --- */
+        .hidden {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+
+        .show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <nav>
+        <div class="logo">AETHEL <span>CORE</span></div>
+        <div class="nav-links">
+            <a href="#home">Accueil</a>
+            <a href="#lore">Philosophie</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <button class="btn-nav">Audit Flash</button>
+    </nav>
+
+    <header id="home">
+        <h1 id="hero-title">Sécuriser l'Essentiel.</h1>
+        <p class="subtitle">De la PME innovante à la Grande Entreprise internationale, AETHEL CORE forge la résilience numérique de ceux qui ne peuvent pas se permettre de tomber.</p>
+        <a href="#contact" class="cta-button">Protéger mon noyau</a>
+    </header>
+
+    <section id="lore">
+        <div class="glass-card hidden">
+            <h2 style="color: var(--bg-purple); margin-bottom:1rem;">Plus qu'une protection : Une Fondation.</h2>
+            <p>Le nom <strong>AETHEL CORE</strong> n'est pas un hasard. Il unit le "noble" (Aethel) et le "cœur" (Core). Nous existons pour protéger ce qu'il y a de plus précieux dans votre organisation : votre savoir-faire, vos données, votre réputation et votre avenir.</p>
+            <br>
+            <p>Nous ne posons pas de simples verrous ; nous construisons l'architecture de confiance sur laquelle repose votre croissance.</p>
+        </div>
+    </section>
+
+    <section id="services">
+        <h2 class="section-title">L'Approche 360°</h2>
+        <div class="services-grid">
+            <div class="glass-card service-item hidden">
+                <h3><span class="service-icon">⚡</span> OFFENSIVE</h3>
+                <p><strong>Tester pour ne pas subir.</strong> Nous attaquons vos systèmes avant les criminels pour identifier vos failles réelles. Pentesting Web, Cloud & Red Teaming.</p>
+            </div>
+            <div class="glass-card service-item hidden">
+                <h3><span class="service-icon">🛡️</span> DÉFENSIVE</h3>
+                <p><strong>Surveillance et réaction.</strong> Un bouclier actif qui détecte et neutralise les menaces en temps réel. Architecture sécurisée et SOC.</p>
+            </div>
+            <div class="glass-card service-item hidden">
+                <h3><span class="service-icon">🧭</span> GOUVERNANCE</h3>
+                <p><strong>La sécurité par la stratégie.</strong> Conformité (NIS2, RGPD, DORA) et pilotage des risques humains. CISO as a Service.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="segmentation">
+        <h2 class="section-title">À chaque taille sa stratégie</h2>
+        <div class="segmentation-container">
+            <div class="segment-card hidden">
+                <h3>PE & PME / TPE</h3>
+                <p>L'Essentiel Sécurisé. Pragamatisme et budget maîtrisé.</p>
+                <ul>
+                    <li>Audit Flash & Sécurisation M365</li>
+                    <li>Sensibilisation anti-phishing</li>
+                    <li>Support d'urgence</li>
+                </ul>
+            </div>
+            <div class="segment-card hidden">
+                <h3>Grandes Entreprises</h3>
+                <p>La Résilience Systémique. Gouvernance et complexité.</p>
+                <ul>
+                    <li>Red Teaming & Simulation APT</li>
+                    <li>Conformité NIS2 / DORA</li>
+                    <li>Architecture Multi-Cloud</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">Discutons</h2>
+        <div class="contact-form hidden">
+            <h3 style="margin-bottom: 1rem; color: var(--bg-purple);">Protégez votre avenir</h3>
+            <form>
+                <input type="text" placeholder="Nom complet" required>
+                <input type="email" placeholder="Email professionnel" required>
+                <select>
+                    <option>Je suis une TPE/PME</option>
+                    <option>Je suis une Grande Entreprise</option>
+                    <option>Autre</option>
+                </select>
+                <textarea rows="5" placeholder="Votre problématique..."></textarea>
+                <button type="submit" class="cta-button" style="width: 100%; transform: none; opacity: 1;">Envoyer</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 AETHEL CORE. La fondation de votre confiance numérique.</p>
+    </footer>
+
+    <script>
+        // 1. ANIMATION DES ELEMENTS AU SCROLL (Scroll Observer)
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, observerOptions);
+
+        const hiddenElements = document.querySelectorAll('.hidden');
+        hiddenElements.forEach((el) => observer.observe(el));
+
+        // 2. ANIMATION HERO (Apparition séquentielle)
+        window.addEventListener('load', () => {
+            const h1 = document.querySelector('h1');
+            const sub = document.querySelector('.subtitle');
+            const btn = document.querySelector('.cta-button');
+
+            setTimeout(() => { h1.style.opacity = '1'; h1.style.transform = 'translateY(0)'; h1.style.transition = '1s'; }, 300);
+            setTimeout(() => { sub.style.opacity = '1'; sub.style.transform = 'translateY(0)'; sub.style.transition = '1s'; }, 800);
+            setTimeout(() => { btn.style.opacity = '1'; btn.style.transform = 'translateY(0)'; btn.style.transition = '1s'; }, 1300);
+        });
+
+        // 3. CANVAS BACKGROUND ANIMATION (Réseau de particules)
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        // Gérer le redimensionnement
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 1.5) - 0.75;
+                this.speedY = (Math.random() * 1.5) - 0.75;
+                // Couleur violette / bleue
+                this.color = 'rgba(142, 68, 173, 0.5)';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                // Dessiner les lignes (connexions réseau)
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(142, 68, 173, ${1 - distance/100})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+    </script>
+</body>
+</html>
